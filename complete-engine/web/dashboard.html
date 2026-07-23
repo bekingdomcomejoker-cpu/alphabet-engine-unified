@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alphabet Engine v3.0 - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .metric {
+            display: inline-block;
+            margin: 10px 20px 10px 0;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .element-bar {
+            margin: 10px 0;
+        }
+        
+        .element-name {
+            display: inline-block;
+            width: 100px;
+            font-weight: bold;
+        }
+        
+        .bar {
+            display: inline-block;
+            height: 20px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+        
+        .letter-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .letter-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            min-width: 150px;
+        }
+        
+        .letter-char {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .letter-name {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .tab.active {
+            background: white;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔤 Alphabet Engine v3.0</h1>
+            <p class="subtitle">Linguistic Operator System | Vowel States & Consonant Operators</p>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('analyze')">Analyze Word</div>
+            <div class="tab" onclick="switchTab('compare')">Compare Words</div>
+            <div class="tab" onclick="switchTab('mate')">Word Mating</div>
+            <div class="tab" onclick="switchTab('letter')">Letter Info</div>
+        </div>
+        
+        <!-- Analyze Tab -->
+        <div id="analyze-tab" class="tab-content active">
+            <div class="card">
+                <h2>📊 Word Analysis</h2>
+                <p>Analyze a word through vowel states, consonant operators, and elemental balance.</p>
+                
+                <div class="input-group">
+                    <label for="analyze-word">Enter Word:</label>
+                    <input type="text" id="analyze-word" placeholder="e.g., TRUTH, LOVE, COMMUNION">
+                </div>
+                
+                <button onclick="analyzeWord()">Analyze</button>
+                
+                <div id="analyze-result" class="result" style="display: none;">
+                    <!-- Results will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Compare Tab -->
+        <div id="compare-tab" class="tab-content">
+            <div class="card">
+                <h2>⚖️ Word Comparison</h2>
+                <p>Compare two words for compatibility and resonance.</p>
+                
+                <div class="input-group">
+                    <label for="compare-word1">First Word:</label>
+                    <input type="text" id="compare-word1" placeholder="e.g., FIRE">
+                </div>
+                
+                <div class="input-group">
+                    <label for="compare-word2">Second Word:</label>
+                    <input type="text" id="compare-word2" placeholder="e.g., WATER">
+                </div>
+                
+                <button onclick="compareWords()">Compare</button>
+                
+                <div id="compare-result" class="result" style="display: none;">
+                    <!-- Results will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mate Tab -->
+        <div id="mate-tab" class="tab-content">
+            <div class="card">
+                <h2>👶 Word Mating</h2>
+                <p>Generate offspring words from two parent words.</p>
+                
+                <div class="input-group">
+                    <label for="mate-word1">Parent 1:</label>
+                    <input type="text" id="mate-word1" placeholder="e.g., SEED">
+                </div>
+                
+                <div class="input-group">
+                    <label for="mate-word2">Parent 2:</label>
+                    <input type="text" id="mate-word2" placeholder="e.g., SOIL">
+                </div>
+                
+                <button onclick="mateWords()">Generate Offspring</button>
+                
+                <div id="mate-result" class="result" style="display: none;">
+                    <!-- Results will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Letter Tab -->
+        <div id="letter-tab" class="tab-content">
+            <div class="card">
+                <h2>🔤 Letter Information</h2>
+                <p>Get detailed information about a specific letter.</p>
+                
+                <div class="input-group">
+                    <label for="letter-char">Enter Letter:</label>
+                    <input type="text" id="letter-char" placeholder="e.g., A, M, T" maxlength="1">
+                </div>
+                
+                <button onclick="getLetterInfo()">Get Info</button>
+                
+                <div id="letter-result" class="result" style="display: none;">
+                    <!-- Results will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function analyzeWord() {
+            const word = document.getElementById('analyze-word').value.trim();
+            if (!word) {
+                alert('Please enter a word');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('analyze-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h3>Analysis of: ${word.toUpperCase()}</h3>
+                <p><em>Note: This is a static demo. For full functionality, run the CLI tool or Python API.</em></p>
+                
+                <div class="metric">
+                    <div class="metric-label">Gematria</div>
+                    <div class="metric-value">???</div>
+                </div>
+                
+                <div class="metric">
+                    <div class="metric-label">I/O Ratio</div>
+                    <div class="metric-value">???</div>
+                </div>
+                
+                <div class="metric">
+                    <div class="metric-label">Dominant Element</div>
+                    <div class="metric-value">???</div>
+                </div>
+                
+                <h4>Element Balance:</h4>
+                <div class="element-bar">
+                    <span class="element-name">Fire:</span>
+                    <span class="bar" style="width: 0px;"></span>
+                </div>
+                <div class="element-bar">
+                    <span class="element-name">Water:</span>
+                    <span class="bar" style="width: 0px;"></span>
+                </div>
+                <div class="element-bar">
+                    <span class="element-name">Earth:</span>
+                    <span class="bar" style="width: 0px;"></span>
+                </div>
+                <div class="element-bar">
+                    <span class="element-name">Air:</span>
+                    <span class="bar" style="width: 0px;"></span>
+                </div>
+                
+                <h4>Instructions:</h4>
+                <p>To get actual analysis results, use the CLI tool:</p>
+                <pre style="background: #333; color: #0f0; padding: 10px; border-radius: 5px; overflow-x: auto;">
+$ ./bin/alphabet-engine analyze ${word.toUpperCase()}
+                </pre>
+            `;
+        }
+        
+        function compareWords() {
+            const word1 = document.getElementById('compare-word1').value.trim();
+            const word2 = document.getElementById('compare-word2').value.trim();
+            
+            if (!word1 || !word2) {
+                alert('Please enter both words');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('compare-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h3>Comparison: ${word1.toUpperCase()} vs ${word2.toUpperCase()}</h3>
+                <p><em>Note: This is a static demo. For full functionality, run the CLI tool or Python API.</em></p>
+                
+                <h4>Instructions:</h4>
+                <p>To get actual comparison results, use the CLI tool:</p>
+                <pre style="background: #333; color: #0f0; padding: 10px; border-radius: 5px; overflow-x: auto;">
+$ ./bin/alphabet-engine compare ${word1.toUpperCase()} ${word2.toUpperCase()}
+                </pre>
+            `;
+        }
+        
+        function mateWords() {
+            const word1 = document.getElementById('mate-word1').value.trim();
+            const word2 = document.getElementById('mate-word2').value.trim();
+            
+            if (!word1 || !word2) {
+                alert('Please enter both parent words');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('mate-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h3>Mating: ${word1.toUpperCase()} + ${word2.toUpperCase()}</h3>
+                <p><em>Note: This is a static demo. For full functionality, run the CLI tool or Python API.</em></p>
+                
+                <h4>Instructions:</h4>
+                <p>To generate actual offspring words, use the CLI tool:</p>
+                <pre style="background: #333; color: #0f0; padding: 10px; border-radius: 5px; overflow-x: auto;">
+$ ./bin/alphabet-engine mate ${word1.toUpperCase()} ${word2.toUpperCase()}
+                </pre>
+            `;
+        }
+        
+        function getLetterInfo() {
+            const char = document.getElementById('letter-char').value.trim().toUpperCase();
+            
+            if (!char || char.length !== 1) {
+                alert('Please enter a single letter');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('letter-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h3>Letter: ${char}</h3>
+                <p><em>Note: This is a static demo. For full functionality, run the CLI tool or Python API.</em></p>
+                
+                <h4>Instructions:</h4>
+                <p>To get actual letter information, use the CLI tool:</p>
+                <pre style="background: #333; color: #0f0; padding: 10px; border-radius: 5px; overflow-x: auto;">
+$ ./bin/alphabet-engine letter ${char}
+                </pre>
+            `;
+        }
+    </script>
+</body>
+</html>

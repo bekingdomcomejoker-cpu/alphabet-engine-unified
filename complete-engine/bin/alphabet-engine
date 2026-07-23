@@ -1,0 +1,261 @@
+#!/usr/bin/env python3.11
+"""
+ALPHABET ENGINE CLI - Command Line Interface
+=============================================
+
+Usage:
+  alphabet-engine analyze <word>              # Analyze a single word
+  alphabet-engine compare <word1> <word2>     # Compare two words
+  alphabet-engine mate <word1> <word2>        # Generate offspring words
+  alphabet-engine transform <word>            # Apply advanced operators
+  alphabet-engine letter <char>               # Get letter information
+  alphabet-engine llm-analyze <word>          # Analyze with LLM integration
+  alphabet-engine interactive                 # Interactive mode
+"""
+
+import sys
+import os
+import json
+
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from core.alphabet_engine import AlphabetEngine
+from core.advanced_operators import AdvancedOperators
+from core.word_mating import WordMating
+from integrations.llm_wrapper import AlphabetLLM
+
+
+class AlphabetCLI:
+    """Command-line interface for Alphabet Engine."""
+    
+    def __init__(self):
+        """Initialize CLI."""
+        self.engine = AlphabetEngine()
+        self.operators = AdvancedOperators()
+        self.mating = WordMating()
+        self.llm = None  # Lazy load
+    
+    def analyze(self, word: str):
+        """Analyze a single word."""
+        print("=" * 70)
+        print(f"ANALYZING: {word.upper()}")
+        print("=" * 70)
+        
+        result = self.engine.analyze_word(word)
+        
+        print(f"\n📊 Basic Metrics:")
+        print(f"  Gematria: {result['gematria']}")
+        print(f"  I/O Ratio: {result['io_ratio']:.2%} - {result['io_interpretation']}")
+        print(f"  Dominant Element: {result['dominant_element']}")
+        print(f"  Letter Count: {result['letter_count']}")
+        print(f"  Semantic Signature: {result['semantic_signature']}")
+        
+        print(f"\n🔥 Element Balance:")
+        for elem, balance in result['element_balance'].items():
+            if balance > 0:
+                bar = "█" * int(balance * 20)
+                print(f"  {elem:8s}: {bar} {balance:.1%}")
+        
+        print(f"\n⚙️  Operator Classes:")
+        for op_class, count in result['operator_classes'].items():
+            print(f"  {op_class}: {count}")
+        
+        if result['vowel_states']:
+            print(f"\n🌊 Vowel State Flow:")
+            print(f"  {' → '.join(result['vowel_states'])}")
+        
+        print(f"\n📝 Letter-by-Letter:")
+        for letter in result['letters']:
+            print(f"  {letter['char']}: {letter['name']} ({letter['element']}) - {letter['leaf']}")
+    
+    def compare(self, word1: str, word2: str):
+        """Compare two words."""
+        print("=" * 70)
+        print(f"COMPARING: {word1.upper()} vs {word2.upper()}")
+        print("=" * 70)
+        
+        result = self.engine.compare_words(word1, word2)
+        
+        print(f"\n🔬 Compatibility Analysis:")
+        print(f"  Element Compatibility: {result['element_compatibility']:.1%}")
+        print(f"  I/O Complementarity: {result['io_complementarity']:.1%}")
+        print(f"  Gematria Resonance: {result['gematria_resonance']:.1%}")
+        print(f"  Overall Compatibility: {result['overall_compatibility']:.1%}")
+        
+        print(f"\n💬 Interpretation:")
+        print(f"  {result['interpretation']}")
+    
+    def mate(self, word1: str, word2: str):
+        """Generate offspring words."""
+        print("=" * 70)
+        print(f"MATING: {word1.upper()} + {word2.upper()}")
+        print("=" * 70)
+        
+        result = self.mating.mate_words(word1, word2, max_candidates=5)
+        
+        print(f"\n👨‍👩‍👧 Parent Compatibility: {result['compatibility']:.1%}")
+        print(f"  {result['compatibility_interpretation']}")
+        
+        print(f"\n👶 Top Offspring Candidates:")
+        for i, offspring in enumerate(result['offspring'], 1):
+            print(f"\n  {i}. {offspring['word']} (Score: {offspring['score']:.1%})")
+            print(f"     Gematria: {offspring['analysis']['gematria']}")
+            print(f"     I/O Ratio: {offspring['analysis']['io_ratio']:.1%}")
+            print(f"     Dominant Element: {offspring['analysis']['dominant_element']}")
+    
+    def transform(self, word: str):
+        """Apply advanced operators."""
+        print("=" * 70)
+        print(f"TRANSFORMING: {word.upper()}")
+        print("=" * 70)
+        
+        result = self.operators.transform_word(word)
+        
+        print(f"\n🔄 Operator Sequence:")
+        print(f"  Initial:    {result['initial_vector']}")
+        print(f"  After GY:   {result['after_gy']}")
+        print(f"  After RAT:  {result['after_rat']}")
+        print(f"  After ShRT: {result['after_shrt']}")
+        print(f"  After Z:    {result['after_z_gate']}")
+        
+        print(f"\n📈 Transformation Metrics:")
+        print(f"  Semantic Shift: {result['semantic_shift']:.1%}")
+        print(f"  Stability: {result['stability']:.1%}")
+        print(f"  Resurrection Triggered: {result['resurrection_triggered']}")
+        
+        print(f"\n🏷️  Vector Labels: {', '.join(result['vector_labels'])}")
+    
+    def letter_info(self, char: str):
+        """Get letter information."""
+        print("=" * 70)
+        print(f"LETTER: {char.upper()}")
+        print("=" * 70)
+        
+        info = self.engine.get_letter_info(char)
+        
+        if not info:
+            print(f"\n❌ Letter '{char}' not found in Alphabet Engine.")
+            return
+        
+        print(f"\n📖 {info['name']}")
+        print(f"\n🌳 Root: {info['root']}")
+        print(f"🌿 Branch: {info['branch']}")
+        print(f"🍃 Leaf: {info['leaf']}")
+        print(f"\n🔥 Element: {info['element']}")
+        print(f"🔢 Gematria: {info['gematria']}")
+        print(f"⚙️  Operator Class: {info['operator_class']}")
+    
+    def llm_analyze(self, word: str):
+        """Analyze with LLM integration."""
+        print("=" * 70)
+        print(f"LLM ANALYSIS: {word.upper()}")
+        print("=" * 70)
+        
+        if self.llm is None:
+            self.llm = AlphabetLLM(model="gpt-4.1-mini")
+        
+        print("\n🤖 Querying LLM with Alphabet Engine context...")
+        result = self.llm.analyze_word_with_llm(word)
+        
+        print(f"\n📊 Alphabet Engine Analysis:")
+        print(f"  Gematria: {result['alphabet_analysis']['gematria']}")
+        print(f"  I/O Ratio: {result['alphabet_analysis']['io_ratio']:.1%}")
+        print(f"  Dominant Element: {result['alphabet_analysis']['dominant_element']}")
+        
+        print(f"\n🤖 LLM Insights:")
+        print(f"  {result['llm_analysis']}")
+    
+    def interactive(self):
+        """Interactive mode."""
+        print("=" * 70)
+        print("ALPHABET ENGINE - Interactive Mode")
+        print("=" * 70)
+        print("\nCommands:")
+        print("  analyze <word>")
+        print("  compare <word1> <word2>")
+        print("  mate <word1> <word2>")
+        print("  transform <word>")
+        print("  letter <char>")
+        print("  llm-analyze <word>")
+        print("  help")
+        print("  exit")
+        print()
+        
+        while True:
+            try:
+                command = input("alphabet> ").strip()
+                
+                if not command:
+                    continue
+                
+                parts = command.split()
+                cmd = parts[0].lower()
+                
+                if cmd == "exit" or cmd == "quit":
+                    print("Goodbye!")
+                    break
+                elif cmd == "help":
+                    print("\nAvailable commands:")
+                    print("  analyze <word>")
+                    print("  compare <word1> <word2>")
+                    print("  mate <word1> <word2>")
+                    print("  transform <word>")
+                    print("  letter <char>")
+                    print("  llm-analyze <word>")
+                    print("  exit")
+                elif cmd == "analyze" and len(parts) >= 2:
+                    self.analyze(parts[1])
+                elif cmd == "compare" and len(parts) >= 3:
+                    self.compare(parts[1], parts[2])
+                elif cmd == "mate" and len(parts) >= 3:
+                    self.mate(parts[1], parts[2])
+                elif cmd == "transform" and len(parts) >= 2:
+                    self.transform(parts[1])
+                elif cmd == "letter" and len(parts) >= 2:
+                    self.letter_info(parts[1])
+                elif cmd == "llm-analyze" and len(parts) >= 2:
+                    self.llm_analyze(parts[1])
+                else:
+                    print("Invalid command. Type 'help' for available commands.")
+                
+                print()  # Blank line after output
+                
+            except KeyboardInterrupt:
+                print("\n\nGoodbye!")
+                break
+            except Exception as e:
+                print(f"Error: {e}")
+
+
+def main():
+    """Main entry point."""
+    cli = AlphabetCLI()
+    
+    if len(sys.argv) < 2:
+        print(__doc__)
+        sys.exit(1)
+    
+    command = sys.argv[1].lower()
+    
+    if command == "analyze" and len(sys.argv) >= 3:
+        cli.analyze(sys.argv[2])
+    elif command == "compare" and len(sys.argv) >= 4:
+        cli.compare(sys.argv[2], sys.argv[3])
+    elif command == "mate" and len(sys.argv) >= 4:
+        cli.mate(sys.argv[2], sys.argv[3])
+    elif command == "transform" and len(sys.argv) >= 3:
+        cli.transform(sys.argv[2])
+    elif command == "letter" and len(sys.argv) >= 3:
+        cli.letter_info(sys.argv[2])
+    elif command == "llm-analyze" and len(sys.argv) >= 3:
+        cli.llm_analyze(sys.argv[2])
+    elif command == "interactive":
+        cli.interactive()
+    else:
+        print(__doc__)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
